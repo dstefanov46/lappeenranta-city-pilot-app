@@ -1,0 +1,23 @@
+[Unit]
+Description=Lappeenranta report backend
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=lappeenranta
+Group=lappeenranta
+WorkingDirectory=/opt/lappeenranta
+EnvironmentFile=/etc/lappeenranta/lappeenranta.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/env node /opt/lappeenranta/dist/backend/backend/server.js
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/lappeenranta
+
+[Install]
+WantedBy=multi-user.target
