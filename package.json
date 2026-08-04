@@ -5,13 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start": "next start",
+    "backend:build": "tsc -p backend/tsconfig.json",
+    "backend:start": "node --env-file-if-exists=.env.local dist/backend/backend/server.js",
     "typecheck": "tsc --noEmit --incremental false",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "next lint"
   },
   "dependencies": {
+    "@fastify/multipart": "^10.1.0",
     "@fontsource/cinzel": "^5.2.8",
+    "fastify": "^5.11.2",
     "lucide-react": "^0.468.0",
     "next": "^15.3.5",
     "react": "^19.0.0",
@@ -25,6 +30,7 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "jsdom": "^25.0.1",
+    "tsx": "^4.23.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }

@@ -9,6 +9,27 @@ type ErrorPayload = {
   errors?: Record<string, string>;
 };
 
+const RATE_LIMIT_MAX = 30;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const submissionsByIp = new Map<string, { count: number; windowStartedAt: number }>();
+
+function clientIp(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return forwarded || request.headers.get("x-real-ip")?.trim() || "unknown";
+}
+
+function isRateLimited(request: Request) {
+  const now = Date.now();
+  const ip = clientIp(request);
+  const current = submissionsByIp.get(ip);
+  if (!current || now - current.windowStartedAt >= RATE_LIMIT_WINDOW_MS) {
+    submissionsByIp.set(ip, { count: 1, windowStartedAt: now });
+    return false;
+  }
+  current.count += 1;
+  return current.count > RATE_LIMIT_MAX;
+}
+
 function jsonError(status: number, payload: ErrorPayload) {
   return NextResponse.json(payload, { status });
 }
@@ -75,6 +96,15 @@ async function forwardReport(apiUrl: string, payload: ReturnType<typeof buildFor
 }
 
 export async function POST(request: Request) {
+  if (isRateLimited(request)) {
+    const response = jsonError(429, {
+      ok: false,
+      message: "Too many reports submitted. Please try again later."
+    });
+    response.headers.set("retry-after", "60");
+    return response;
+  }
+
   let parsed: Awaited<ReturnType<typeof parseRequest>>;
 
   try {

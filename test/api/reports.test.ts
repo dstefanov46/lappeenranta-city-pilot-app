@@ -123,5 +123,26 @@ describe("POST /api/reports", () => {
     expect(response.status).toBe(422);
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it("returns a controlled response when the backend is not configured", async () => {
+    const response = await POST(new Request("http://localhost/api/reports", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body)
+    }));
+    expect(response.status).toBe(503);
+  });
+
+  it("rate-limits repeated submissions by the trusted proxy IP", async () => {
+    process.env.LAPPEENRANTA_REPORT_API_URL = endpoint;
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify({ reference: "LP-rate" }), { status: 201 }));
+    const request = () => POST(new Request("http://localhost/api/reports", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": "198.51.100.77" },
+      body: JSON.stringify(body)
+    }));
+    for (let index = 0; index < 30; index += 1) expect((await request()).status).toBe(200);
+    expect((await request()).status).toBe(429);
+  });
 });
 
