@@ -59,8 +59,9 @@ textarea {
   gap: 18px;
 }
 
-.form-header,
 .form-section,
+.brand-card,
+.report-title-card,
 .privacy-band,
 .error-panel,
 .success-panel {
@@ -73,12 +74,20 @@ textarea {
   position: relative;
   display: grid;
   justify-items: center;
-  padding: 28px;
 }
 
-.brand-block {
+.brand-card {
   display: grid;
   justify-items: center;
+  width: 100%;
+  padding: 28px;
+  text-align: center;
+}
+
+.report-title-card {
+  display: grid;
+  justify-items: center;
+  padding: 28px;
   text-align: center;
 }
 

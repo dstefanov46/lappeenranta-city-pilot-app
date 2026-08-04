@@ -201,13 +201,12 @@ export function ReportForm() {
     <main className="page-shell">
       <form className="report-form" onSubmit={submit} noValidate>
         <header className="form-header">
-          <div className="brand-block">
+          <div className="brand-card">
             <svg className="brand-waves" viewBox="0 0 180 58" aria-hidden="true">
               <path d="M16 48c30-28 58-18 82-10 20 7 37 3 58-15-28 9-47 3-65-2C61 12 37 22 16 48Z" />
               <path d="M76 17c19-18 34-20 55-10 14 7 25 6 36-2-18 16-34 21-53 16-15-4-25-8-38-4Z" />
             </svg>
             <p className="kicker">{copy.appName}</p>
-            <h1>{copy.intro}</h1>
           </div>
           <div className="header-actions">
             <button className="language-toggle" type="button" onClick={toggleLanguage}>
@@ -215,6 +214,10 @@ export function ReportForm() {
             </button>
           </div>
         </header>
+
+        <section className="report-title-card">
+          <h1>{copy.intro}</h1>
+        </section>
 
         <section className="form-section" aria-labelledby="location-heading">
           <div className="section-heading">
